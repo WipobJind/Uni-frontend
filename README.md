@@ -1,16 +1,41 @@
-# React + Vite
+# UniPath: Strategic Academic Planning Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Team Members
+- [Wipob Jindapornsuk](https://github.com/WipobJind)
+- [Jakawat Wongcharuen](https://github.com/Jakawat)
 
-Currently, two official plugins are available:
+## Description
+UniPath is a web-based academic planning platform that helps university students organize their degree journey. Students can track courses, calculate GPA, monitor degree progress, and manage academic events in one place.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Features
+- User registration and authentication
+- Course management with status tracking (Planned, In-Progress, Completed)
+- Event management linked to specific courses
+- Automatic GPA calculation based on grades and credit weights
+- Degree progress tracking
+- Dashboard with academic overview and upcoming events
 
-## React Compiler
+### Tech Stack
+- Frontend: React (Vite)
+- Backend: Next.js (App Router)
+- Database: MongoDB Atlas
+- Deployment: Azure Virtual Machine
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Repositories
+- Frontend: this repo
+- Backend: [unipath-backend](https://github.com/WipobJind/Uni-backend)
 
-## Expanding the ESLint configuration
+## Screenshots
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Login
+<img width="1706" height="1102" alt="Image" src="https://github.com/user-attachments/assets/3f325831-32b6-4cd5-bce5-4a50b87b72e4" />
+- Register
+<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/e4952725-f274-4841-a1d6-839f41f83aba" />
+- Dashboard
+<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/d6703147-2a96-47ca-9758-8c298668ed42" />
+- Courses
+<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/ec4dfd2f-aa15-438f-a9fc-e7b785e4e79c" />
+- Events
+<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/51b45863-e515-487a-89d5-4b54dad64813" />
+- Profile
+<img width="1710" height="1107" alt="Image" src="https://github.com/user-attachments/assets/dd22fc24-a72e-41a7-85e1-b0a69f7afc66" />
