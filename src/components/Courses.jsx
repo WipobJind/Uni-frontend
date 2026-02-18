@@ -28,34 +28,30 @@ export default function Courses() {
   }
 
   async function onAdd() {
-    // TODO: Implement the add course handler
-    // Step 1: Clear previous errors by calling setError("")
-    // Step 2: Build a request body object from the refs:
-    //         {
-    //           courseCode: courseCodeRef.current.value,
-    //           title: titleRef.current.value,
-    //           credits: Number(creditsRef.current.value) || 3,
-    //           status: statusRef.current.value,
-    //           grade: gradeRef.current.value,
-    //           semester: semesterRef.current.value,
-    //           year: Number(yearRef.current.value),
-    //         }
-    // Step 3: Validate that courseCode and title are not empty
-    //         If missing, call setError("Course code and title are required") and return
-    // Step 4: Send a POST request to `${API_URL}/api/course` with:
-    //         - method: "POST"
-    //         - headers: { "Content-Type": "application/json" }
-    //         - body: JSON.stringify(body)
-    //         - credentials: "include"
-    // Step 5: If status is 200, call setShowForm(false) and loadCourses() to refresh the list
-    // Step 6: If status is not 200, parse the response JSON and call setError(data.message || "Failed")
+    setError("");
+    const body = {
+      courseCode: courseCodeRef.current.value,
+      title: titleRef.current.value,
+      credits: Number(creditsRef.current.value) || 3,
+      status: statusRef.current.value,
+      grade: gradeRef.current.value,
+      semester: semesterRef.current.value,
+      year: Number(yearRef.current.value),
+    };
+    if (!body.courseCode || !body.title) { setError("Course code and title are required"); return; }
+
+    const result = await fetch(`${API_URL}/api/course`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body), credentials: "include",
+    });
+    if (result.status === 200) { setShowForm(false); loadCourses(); }
+    else { const data = await result.json(); setError(data.message || "Failed"); }
   }
 
   async function onDelete(id) {
-    // TODO: Implement the delete course handler
-    // Step 1: Show a confirmation dialog: if (!confirm("Delete this course and its events?")) return
-    // Step 2: Send a DELETE request to `${API_URL}/api/course/${id}` with { method: "DELETE", credentials: "include" }
-    // Step 3: Call loadCourses() to refresh the list after deletion
+    if (!confirm("Delete this course and its events?")) return;
+    await fetch(`${API_URL}/api/course/${id}`, { method: "DELETE", credentials: "include" });
+    loadCourses();
   }
 
   useEffect(() => { loadCourses(); }, []);

@@ -7,9 +7,8 @@ export default function Logout() {
   const { logout } = useUser();
 
   async function onLogout() {
-    // TODO: Implement the logout handler
-    // Step 1: Call await logout() to trigger the logout process from UserProvider
-    // Step 2: Call setIsLoading(false) to stop showing the loading message and trigger redirect
+    await logout();
+    setIsLoading(false);
   }
 
   useEffect(() => { onLogout(); }, []);

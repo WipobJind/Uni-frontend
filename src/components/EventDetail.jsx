@@ -17,37 +17,34 @@ export default function EventDetail() {
   const courseIdRef = useRef();
 
   async function loadEvent() {
-    // TODO: Implement the event loading function
-    // Step 1: Send a GET request to `${API_URL}/api/event/${id}` with { credentials: "include" }
-    // Step 2: If result.status is 401, call logout() and return (session expired)
-    // Step 3: If result.status is 404, call navigate("/events") and return (event not found)
-    // Step 4: Parse the response JSON into a variable called "data"
-    // Step 5: Populate each ref with the data from the API:
-    //         - titleRef.current.value = data.title || ""
-    //         - dateRef: if data.date exists, set to new Date(data.date).toISOString().slice(0, 16)
-    //         - typeRef.current.value = data.type || "Other"
-    //         - courseIdRef.current.value = data.courseId || ""
-    // Step 6: Call setIsLoading(false) to show the form
+    const result = await fetch(`${API_URL}/api/event/${id}`, { credentials: "include" });
+    if (result.status === 401) { logout(); return; }
+    if (result.status === 404) { navigate("/events"); return; }
+    const data = await result.json();
+    titleRef.current.value = data.title || "";
+    if (data.date) dateRef.current.value = new Date(data.date).toISOString().slice(0, 16);
+    typeRef.current.value = data.type || "Other";
+    courseIdRef.current.value = data.courseId || "";
+    setIsLoading(false);
   }
 
   async function loadCourses() {
-    // TODO: Implement the courses loading function (for the dropdown)
-    // Step 1: Send a GET request to `${API_URL}/api/course` with { credentials: "include" }
-    // Step 2: If result.status is 401, return early
-    // Step 3: Parse the response JSON and call setCourses() with the result
+    const result = await fetch(`${API_URL}/api/course`, { credentials: "include" });
+    if (result.status === 401) return;
+    setCourses(await result.json());
   }
 
   async function onUpdate() {
-    // TODO: Implement the event update handler
-    // Step 1: Clear the message state: setMessage("")
-    // Step 2: Build the request body from refs:
-    //         { title, date, type, courseId (use value || null) }
-    // Step 3: Send a PATCH request to `${API_URL}/api/event/${id}` with:
-    //         - method: "PATCH"
-    //         - headers: { "Content-Type": "application/json" }
-    //         - body: JSON.stringify(body)
-    //         - credentials: "include"
-    // Step 4: If result.status is 200, call setMessage("success"), otherwise setMessage("error")
+    setMessage("");
+    const body = {
+      title: titleRef.current.value, date: dateRef.current.value,
+      type: typeRef.current.value, courseId: courseIdRef.current.value || null,
+    };
+    const result = await fetch(`${API_URL}/api/event/${id}`, {
+      method: "PATCH", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body), credentials: "include",
+    });
+    setMessage(result.status === 200 ? "success" : "error");
   }
 
   useEffect(() => { loadCourses().then(() => loadEvent()); }, []);

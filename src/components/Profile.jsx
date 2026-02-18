@@ -15,31 +15,32 @@ export default function Profile() {
   const targetGPARef = useRef();
 
   async function fetchProfile() {
-    // TODO: Implement the profile fetching function
-    // Step 1: Send a GET request to `${API_URL}/api/user/profile` with { credentials: "include" }
-    // Step 2: If result.status is 401, call logout() and return (session expired)
-    // Step 3: Parse the response JSON and call setData() with the result
-    // Step 4: Call setIsLoading(false) to show the profile form
+    const result = await fetch(`${API_URL}/api/user/profile`, { credentials: "include" });
+    if (result.status === 401) { logout(); return; }
+    const json = await result.json();
+    setData(json);
+    setIsLoading(false);
   }
 
   async function onUpdate() {
-    // TODO: Implement the profile update handler
-    // Step 1: Clear the message state: setMessage("")
-    // Step 2: Build the request body from refs:
-    //         {
-    //           firstname: firstnameRef.current.value,
-    //           lastname: lastnameRef.current.value,
-    //           major: majorRef.current.value,
-    //           enrollmentYear: Number(enrollmentYearRef.current.value),
-    //           targetGPA: Number(targetGPARef.current.value),
-    //         }
-    // Step 3: Send a PATCH request to `${API_URL}/api/user/profile` with:
-    //         - method: "PATCH"
-    //         - headers: { "Content-Type": "application/json" }
-    //         - body: JSON.stringify(body)
-    //         - credentials: "include"
-    // Step 4: If result.status is 200, call setMessage("success") and fetchProfile() to refresh
-    // Step 5: If not 200, call setMessage("error")
+    setMessage("");
+    const body = {
+      firstname: firstnameRef.current.value,
+      lastname: lastnameRef.current.value,
+      major: majorRef.current.value,
+      enrollmentYear: Number(enrollmentYearRef.current.value),
+      targetGPA: Number(targetGPARef.current.value),
+    };
+
+    const result = await fetch(`${API_URL}/api/user/profile`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      credentials: "include",
+    });
+
+    if (result.status === 200) { setMessage("success"); fetchProfile(); }
+    else { setMessage("error"); }
   }
 
   useEffect(() => { fetchProfile(); }, []);

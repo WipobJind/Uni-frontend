@@ -8,13 +8,14 @@ export default function Dashboard() {
   const API_URL = import.meta.env.VITE_API_URL;
 
   async function fetchDashboard() {
-    // TODO: Implement the dashboard data fetching
-    // Step 1: Wrap everything in a try/catch block
-    // Step 2: Send a GET request to `${API_URL}/api/dashboard` with { credentials: "include" }
-    // Step 3: If the response status is 401, call logout() and return (session expired)
-    // Step 4: Parse the response JSON and call setData() with the result
-    // Step 5: Call setIsLoading(false) to stop the loading state
-    // Step 6: In the catch block, console.log the error
+    try {
+      const result = await fetch(`${API_URL}/api/dashboard`, { credentials: "include" });
+      if (result.status === 401) { logout(); return; }
+      setData(await result.json());
+      setIsLoading(false);
+    } catch (err) {
+      console.log("Dashboard error:", err);
+    }
   }
 
   useEffect(() => { fetchDashboard(); }, []);
@@ -25,28 +26,37 @@ export default function Dashboard() {
     <div className="page">
       <h2 style={{ marginBottom: "16px" }}>Dashboard</h2>
 
-      {/* TODO: Implement the statistics cards section */}
-      {/* Create a div with className="stat-grid" containing 3 stat cards: */}
-      {/*   Card 1 - Current GPA: */}
-      {/*     - borderTop: "3px solid #2b6cb0" */}
-      {/*     - Display data.gpa as stat-number (color: "#2b6cb0") */}
-      {/*     - Label: "Current GPA" */}
-      {/*     - Sub-text: "Target: {data.targetGPA}" */}
-      {/*   Card 2 - Degree Progress: */}
-      {/*     - borderTop: "3px solid #276749" */}
-      {/*     - Display data.progressPercent + "%" as stat-number (color: "#276749") */}
-      {/*     - Label: "Degree Progress" */}
-      {/*     - Sub-text: "{data.completedCredits}/{data.totalPlannedCredits} credits" */}
-      {/*   Card 3 - Total Courses: */}
-      {/*     - borderTop: "3px solid #6b46c1" */}
-      {/*     - Display data.totalCourses as stat-number (color: "#6b46c1") */}
-      {/*     - Label: "Total Courses" */}
+      <div className="stat-grid">
+        <div className="stat-card" style={{ borderTop: "3px solid #2b6cb0" }}>
+          <div className="stat-number" style={{ color: "#2b6cb0" }}>{data.gpa}</div>
+          <div className="stat-label">Current GPA</div>
+          <div className="stat-sub">Target: {data.targetGPA}</div>
+        </div>
+        <div className="stat-card" style={{ borderTop: "3px solid #276749" }}>
+          <div className="stat-number" style={{ color: "#276749" }}>{data.progressPercent}%</div>
+          <div className="stat-label">Degree Progress</div>
+          <div className="stat-sub">{data.completedCredits}/{data.totalPlannedCredits} credits</div>
+        </div>
+        <div className="stat-card" style={{ borderTop: "3px solid #6b46c1" }}>
+          <div className="stat-number" style={{ color: "#6b46c1" }}>{data.totalCourses}</div>
+          <div className="stat-label">Total Courses</div>
+        </div>
+      </div>
 
-      {/* TODO: Implement the status counts section */}
-      {/* Create another div with className="stat-grid" containing 3 stat cards: */}
-      {/*   Card 1: data.statusCounts.Planned — label "Planned" */}
-      {/*   Card 2: data.statusCounts["In-Progress"] — label "In Progress" */}
-      {/*   Card 3: data.statusCounts.Completed — label "Completed" */}
+      <div className="stat-grid">
+        <div className="stat-card">
+          <strong>{data.statusCounts.Planned}</strong>
+          <div className="stat-sub">Planned</div>
+        </div>
+        <div className="stat-card">
+          <strong>{data.statusCounts["In-Progress"]}</strong>
+          <div className="stat-sub">In Progress</div>
+        </div>
+        <div className="stat-card">
+          <strong>{data.statusCounts.Completed}</strong>
+          <div className="stat-sub">Completed</div>
+        </div>
+      </div>
 
       <div className="card">
         <h3 style={{ marginBottom: "12px" }}>Upcoming Events (Next 7 Days)</h3>

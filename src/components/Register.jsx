@@ -17,29 +17,39 @@ export default function Register() {
   const targetGPARef = useRef();
 
   async function onRegister() {
-    // TODO: Implement the registration handler
-    // Step 1: Clear previous errors by calling setError("")
-    // Step 2: Build a request body object by reading values from the refs:
-    //         {
-    //           username: usernameRef.current.value,
-    //           email: emailRef.current.value,
-    //           password: passwordRef.current.value,
-    //           firstname: firstnameRef.current.value,
-    //           lastname: lastnameRef.current.value,
-    //           major: majorRef.current.value,
-    //           enrollmentYear: Number(enrollmentYearRef.current.value) || new Date().getFullYear(),
-    //           targetGPA: Number(targetGPARef.current.value) || 4.0,
-    //         }
-    // Step 3: Validate that username, email, and password are not empty
-    //         If any is missing, call setError("Username, email, and password are required") and return
-    // Step 4: Send a POST request to `${API_URL}/api/user` with:
-    //         - method: "POST"
-    //         - headers: { "Content-Type": "application/json" }
-    //         - body: JSON.stringify(body)
-    // Step 5: Parse the response JSON: const data = await result.json()
-    // Step 6: If status is 200, call setSuccess(true) and use setTimeout to navigate to "/login" after 2000ms
-    // Step 7: If status is not 200, call setError(data.message || "Registration failed")
-    // Step 8: Wrap the fetch in try/catch — in catch, call setError("Network error")
+    setError("");
+    const body = {
+      username: usernameRef.current.value,
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      firstname: firstnameRef.current.value,
+      lastname: lastnameRef.current.value,
+      major: majorRef.current.value,
+      enrollmentYear: Number(enrollmentYearRef.current.value) || new Date().getFullYear(),
+      targetGPA: Number(targetGPARef.current.value) || 4.0,
+    };
+
+    if (!body.username || !body.email || !body.password) {
+      setError("Username, email, and password are required");
+      return;
+    }
+
+    try {
+      const result = await fetch(`${API_URL}/api/user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await result.json();
+      if (result.status === 200) {
+        setSuccess(true);
+        setTimeout(() => navigate("/login"), 2000);
+      } else {
+        setError(data.message || "Registration failed");
+      }
+    } catch (err) {
+      setError("Network error");
+    }
   }
 
   return (

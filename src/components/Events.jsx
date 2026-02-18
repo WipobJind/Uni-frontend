@@ -32,41 +32,33 @@ export default function Events() {
   }
 
   async function onAdd() {
-    // TODO: Implement the add event handler
-    // Step 1: Clear previous errors: setError("")
-    // Step 2: Build the request body from refs:
-    //         {
-    //           title: titleRef.current.value,
-    //           date: dateRef.current.value,
-    //           type: typeRef.current.value,
-    //           courseId: courseIdRef.current.value || null,
-    //         }
-    // Step 3: Validate that title and date are not empty
-    //         If missing, call setError("Title and date are required") and return
-    // Step 4: Send a POST request to `${API_URL}/api/event` with:
-    //         - method: "POST"
-    //         - headers: { "Content-Type": "application/json" }
-    //         - body: JSON.stringify(body)
-    //         - credentials: "include"
-    // Step 5: If status is 200, call setShowForm(false) and loadEvents()
-    // Step 6: If not 200, parse JSON and setError(data.message || "Failed")
+    setError("");
+    const body = {
+      title: titleRef.current.value, date: dateRef.current.value,
+      type: typeRef.current.value, courseId: courseIdRef.current.value || null,
+    };
+    if (!body.title || !body.date) { setError("Title and date are required"); return; }
+
+    const result = await fetch(`${API_URL}/api/event`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body), credentials: "include",
+    });
+    if (result.status === 200) { setShowForm(false); loadEvents(); }
+    else { const data = await result.json(); setError(data.message || "Failed"); }
   }
 
   async function onToggleComplete(event) {
-    // TODO: Implement the toggle completion handler
-    // Step 1: Send a PATCH request to `${API_URL}/api/event/${event._id}` with:
-    //         - method: "PATCH"
-    //         - headers: { "Content-Type": "application/json" }
-    //         - body: JSON.stringify({ isCompleted: !event.isCompleted })
-    //         - credentials: "include"
-    // Step 2: Call loadEvents() to refresh the list with the updated status
+    await fetch(`${API_URL}/api/event/${event._id}`, {
+      method: "PATCH", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isCompleted: !event.isCompleted }), credentials: "include",
+    });
+    loadEvents();
   }
 
   async function onDelete(id) {
-    // TODO: Implement the delete event handler
-    // Step 1: Show a confirmation dialog: if (!confirm("Delete this event?")) return
-    // Step 2: Send a DELETE request to `${API_URL}/api/event/${id}` with { method: "DELETE", credentials: "include" }
-    // Step 3: Call loadEvents() to refresh the list
+    if (!confirm("Delete this event?")) return;
+    await fetch(`${API_URL}/api/event/${id}`, { method: "DELETE", credentials: "include" });
+    loadEvents();
   }
 
   useEffect(() => { loadEvents(); loadCourses(); }, []);
